@@ -1,86 +1,86 @@
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import shortid from 'shortid';
 import s from './ContactForm.module.css';
 
-class ContactForm extends Component {
-  state = {
-    name: '',
-    number: '',
+const ContactForm = ({ onAddNewContact, exsisted }) => {
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
+
+  const nameInputId = shortid.generate();
+  const phoneNumberId = shortid.generate();
+
+  const handleContactInputChange = event => {
+    const { name, value } = event.target;
+    switch (name) {
+      case 'name':
+        setName(value);
+        break;
+      case 'number':
+        setNumber(value);
+        break;
+      default:
+        return;
+    }
   };
 
-  static propTypes = {
-    onAddNewContact: PropTypes.func,
-    exsisted: PropTypes.func,
-  };
+  const handleContactSubmit = event => {
+    event.preventDefault();
 
-  nameInputId = shortid.generate();
-  phoneNumberId = shortid.generate();
-
-  handleContactInputChange = e => {
-    const { name, value } = e.currentTarget;
-    this.setState({
-      [name]: value,
-    });
-  };
-
-  handleContactSubmit = e => {
-    e.preventDefault();
-    const { name, number } = this.state;
-
-    if (this.props.exsisted(name)) {
+    if (exsisted(name)) {
       alert(`${name} is alredy in contacts.`);
-      this.reset();
+      reset();
       return;
     }
 
-    this.props.onAddNewContact(name, number);
-
-    this.reset();
+    onAddNewContact(name, number);
+    reset();
   };
 
-  reset() {
-    this.setState({ name: '', number: '' });
-  }
+  const reset = () => {
+    setName('');
+    setNumber('');
+  };
 
-  render() {
-    const { name, number } = this.state;
+  return (
+    <>
+      <h1 className={s.phonebookTitle}>Phonebook</h1>
+      <form className={s.form} onSubmit={handleContactSubmit}>
+        <label htmlFor={nameInputId} className={s.label}>
+          <span className={s.labelDescription}>Name</span>
+          <input
+            type="text"
+            name="name"
+            value={name}
+            id={nameInputId}
+            className={s.input}
+            onChange={handleContactInputChange}
+          />
+        </label>
 
-    return (
-      <>
-        <h1 className={s.phonebookTitle}>Phonebook</h1>
-        <form className={s.form} onSubmit={this.handleContactSubmit}>
-          <label htmlFor={this.nameInputId} className={s.label}>
-            <span className={s.labelDescription}> Name</span>
-            <input
-              type="text"
-              name="name"
-              value={name}
-              id={this.nameInputId}
-              className={s.input}
-              onChange={this.handleContactInputChange}
-            />
-          </label>
+        <label htmlFor={phoneNumberId} className={s.label}>
+          <span className={s.labelDescription}>Number</span>
+          <input
+            type="tel"
+            name="number"
+            value={number}
+            id={phoneNumberId}
+            className={s.input}
+            onChange={handleContactInputChange}
+          />
+        </label>
 
-          <label htmlFor={this.phoneNumberId} className={s.label}>
-            <span className={s.labelDescription}>Number</span>
-            <input
-              type="tel"
-              name="number"
-              value={number}
-              id={this.phoneNumberId}
-              className={s.input}
-              onChange={this.handleContactInputChange}
-            />
-          </label>
+        <button type="submit" className={s.addContactBtn}>
+          Add contact
+        </button>
+      </form>
+    </>
+  );
+};
 
-          <button type="submit" className={s.addContactBtn}>
-            Add contact
-          </button>
-        </form>
-      </>
-    );
-  }
-}
+ContactForm.propTypes = {
+  onAddNewContact: PropTypes.func,
+  exsisted: PropTypes.func,
+};
 
 export default ContactForm;
