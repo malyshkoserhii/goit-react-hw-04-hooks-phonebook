@@ -30,8 +30,8 @@ const App = () => {
     setContacts(contacts.filter(contact => contact.id !== contactId));
   };
 
-  const changeFilter = ({ currentTarget }) => {
-    setFilter(currentTarget);
+  const changeFilter = e => {
+    setFilter(e.currentTarget.value);
   };
 
   const getExistedContact = name => {

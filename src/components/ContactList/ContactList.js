@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import s from './ContactList.module.css';
 
 const ContactsList = ({ contacts, onDeleteContact }) => {
-  console.log(contacts.length);
   return (
     contacts.length > 0 && (
       <ul className={s.contactsList}>
